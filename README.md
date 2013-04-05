@@ -1,4 +1,5 @@
 Tictactoe
 =========
 
-Online Tictactoe game built with Html/css javascript with Ruby on Rails for social features
+Online Tictactoe Five in a row game built with Html/css javascript using Kinetic.js library 
+
