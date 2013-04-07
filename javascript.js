@@ -44,27 +44,43 @@ for (var row = 0; row < dimension; row++) {
 			height: len,
 			stroke: 'black',
 			strokeWidth: 2,
-			fill: 'white'
+			fill: 'white',
+			selected: false
 		});
 		squareGroup.add(square);
 		console.log(square.attrs.id);
 
 	}
 }
+
 shape = squareGroup.get('.square');
 single = squareGroup.get('#0,0')[0];
 shape.on("mouseenter", function(){
-	this.setFill('blue');
-	layer.draw();
+	if (this.attrs.state === 0){
+		this.attrs.selected = true;
+		this.setFill('blue');
+		layer.draw();
+	}
 });
 shape.on("mouseleave", function(){
+	this.attrs.selected = false;
 	this.setFill('white');
 	layer.draw();
 });
+
+shape.on("mouseup", function(){
+	if (this.attrs.selected === true){
+		this.setFill('red');
+		layer.draw();
+	}
+});
+
 shape.each(function(shape){
 	console.log(shape.attrs.id);
+	console.log(shape.attrs.selected)
 })
 console.log(single.attrs.id);
+console.log(single.attrs.state);
 layer.add(squareGroup);
 stage.add(layer);
 });
