@@ -2,8 +2,23 @@ body{
   overflow:hidden;
 }
 #container{
+	width:50%;
 	margin-right: auto;
 	margin-left: auto;
-	width: 500px;
-	height: 500px;
+	height:5px;
+}
+#gameboard{
+	float:left;
+	width: 450px;
+	height: 450px;
+	border: 1px solid black;
+}
+
+#scoreboard{
+	float:left;
+	width: 100px;
+	height: 450px;
+	border: 1px solid black;
+	margin-right:2px;
+
 }
