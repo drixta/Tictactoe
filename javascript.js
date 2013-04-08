@@ -20,12 +20,16 @@ var xGroup = new Kinetic.Group({
 
 });
 
+var circleGroup = new Kinetic.Group({
+
+});
+
 var state = 0; //neutral squares
 for (var row = 0; row < dimension; row++) {
 	for (var col = 0; col < dimension; col++){
 		var len = stageWidth/dimension;
 		var square = new Kinetic.Rect({
-			id : "square"+ row + "," + col,
+			id : row + "," + col,
 			name: 'square',
 			rowNumber: row,
 			colNumber: col,
@@ -42,7 +46,7 @@ for (var row = 0; row < dimension; row++) {
 		squareGroup.add(square);
 		console.log(square.attrs.id);
 		var ltrx = new Kinetic.Line({
-			id : "x" + row + "," + col,
+			id : "xl" + col + "," + row,
 			name : 'x',
 			rowNumber: row,
 			colNumber: col,
@@ -53,7 +57,7 @@ for (var row = 0; row < dimension; row++) {
 			visible: false
 		});
 		var rtlx = new Kinetic.Line({
-			id : "x" + row + "," + col,
+			id : "xr" + col + "," + row,
 			name : 'x',
 			rowNumber: row,
 			colNumber: col,
@@ -78,7 +82,7 @@ for (var row = 0; row < dimension; row++) {
 		//using move to change position of Xs
 		ltrx.move(col * len,row * len);
 		rtlx.move(col * len,row * len);
-		xGroup.add(circle);
+		circleGroup.add(circle);
 		xGroup.add(ltrx);
 		xGroup.add(rtlx);
 	}
@@ -99,6 +103,7 @@ console.log(single.attrs.state);
 //adding layers and stage
 gameLayer.add(squareGroup);
 gameLayer.add(xGroup);
+gameLayer.add(circleGroup);
 gameStage.add(gameLayer);
 
 
@@ -198,8 +203,6 @@ scoreStage.add(scoreLayer);
 
 var player = 1
 
-
-console.log(player1Text);
 function highlightPlayername(player1,player2){
 	if (player === 1){
 		player1.setStrokeWidth(3);
@@ -215,14 +218,25 @@ function highlightPlayername(player1,player2){
 	}
 	scoreLayer.draw();
 }
+//default highlight
 highlightPlayername(player1Text,player2Text);
 
+//changing players
 function other(){
 	player = (player + 1) % 2;
 };
 
 function drawx(square){
-
+	thisid = square.attrs.id;
+	thisxl = xGroup.get('#xl'+ thisid)[0];
+	thisxr = xGroup.get('#xr'+ thisid)[0];
+	thisxr.attrs.visible = true;
+	thisxl.attrs.visible = true;
+}
+function drawcircle(square){
+	thisid = square.attrs.id;
+	thiscircle = circleGroup.get('#circle' + thisid)[0];
+	thiscircle.attrs.visible = true;
 }
 
 shape = squareGroup.get('.square');
@@ -244,6 +258,7 @@ shape.on("mouseup", function(){
 		this.setFill('red');
 		other();
 		highlightPlayername(player1Text,player2Text);
+		drawcircle(this);
 		console.log(player);
 		gameLayer.draw();
 
