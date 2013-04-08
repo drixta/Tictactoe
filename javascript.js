@@ -260,10 +260,10 @@ function checkrow(square){
 			counter++;
 			total++;
 			var rsquare = squareGroup.get('#'+row+','+(col+counter))[0];
+		}
 	}
-	}
+	counter = 1;
 	if (col - counter >= 0){
-		counter = 1;
 		var lsquare = squareGroup.get('#'+ row + ',' + (col-counter))[0];
 		while (lsquare && lsquare.attrs.state === player) {//check left side
 			counter++;
@@ -273,7 +273,7 @@ function checkrow(square){
 	}
 	console.log('Player' + player);
 	if (total === 5) {
-		alert('Player ' + player + ' win');
+		return true;
 	}
 }
 
@@ -289,10 +289,10 @@ function checkcol(square){
 			counter++;
 			total++;
 			var rsquare = squareGroup.get('#'+(row+counter)+','+col)[0];
+		}
 	}
-	}
+	counter = 1;
 	if (row - counter >= 0){
-		counter = 1;
 		var lsquare = squareGroup.get('#'+ (row-counter) + ',' + col)[0];
 		while (lsquare && lsquare.attrs.state === player) {//check left side
 			counter++;
@@ -302,9 +302,71 @@ function checkcol(square){
 	}
 	console.log('Player' + player);
 	if (total === 5) {
+		return true;
+	}
+}
+
+function checkRightDiagonal(square){
+	total = 1;
+	counter = 1;
+	row = square.attrs.rowNumber;
+	col = square.attrs.colNumber;
+
+	if (row + counter <= dimension && col + counter <= dimension){
+		var drsquare = squareGroup.get('#'+(row+counter)+','+(col+counter))[0];
+		while (drsquare && drsquare.attrs.state === player) {   //check right side
+			counter++;
+			total++;
+			var drsquare = squareGroup.get('#'+(row+counter)+','+(col+counter))[0];
+		}
+	}
+	counter = 1;
+	if (row - counter >= 0 && col - counter >= 0){
+		var ulsquare = squareGroup.get('#'+ (row-counter) + ',' + (col-counter))[0];
+		while (ulsquare && ulsquare.attrs.state === player) {//check left side
+			counter++;
+			total++;
+			var ulsquare = squareGroup.get('#'+ (row-counter) + ',' + (col-counter))[0];
+		}
+	}
+	console.log('Player' + player);
+	if (total === 5) {
+		return true;
+	}
+}
+function checkLeftDiagonal(square){
+	total = 1;
+	counter = 1;
+	row = square.attrs.rowNumber;
+	col = square.attrs.colNumber;
+
+	if (row - counter >= 0 && col + counter <= dimension){
+		var ursquare = squareGroup.get('#'+(row - counter)+','+(col+counter))[0];
+		while (ursquare && ursquare.attrs.state === player) {   //check right side
+			counter++;
+			total++;
+			var ursquare = squareGroup.get('#'+(row - counter)+','+(col+counter))[0];
+		}
+	}
+	counter = 1;
+	if (row + counter <= dimension && col - counter >= 0){
+		var dlsquare = squareGroup.get('#'+ (row + counter) + ',' + (col-counter))[0];
+		while (dlsquare && dlsquare.attrs.state === player) {//check left side
+			counter++;
+			total++;
+			var dlsquare = squareGroup.get('#'+ (row + counter) + ',' + (col-counter))[0];
+		}
+	}
+	console.log('Player' + player);
+	if (total === 5) {
+		return true;
+	}
+}
+
+function check(square){
+	if (checkrow(square) || checkcol(square) || checkLeftDiagonal(square) || checkRightDiagonal(square)){
 		alert('Player ' + player + ' win');
 	}
-	
 }
 shape = squareGroup.get('.square');
 shape.on("mouseenter", function(){
@@ -325,7 +387,7 @@ shape.on("mouseup", function(){
 		highlightPlayername(player1Text,player2Text);
 		drawsign(this);		
 		console.log(player);
-		checkcol(this);
+		check(this);
 		other();
 		gameLayer.draw();
 
