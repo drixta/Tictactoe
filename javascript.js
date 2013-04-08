@@ -42,7 +42,7 @@ for (var row = 0; row < dimension; row++) {
 		});
 		var ltrx = new Kinetic.Line({
 			id : "xl" + row + "," + col,
-			name : 'x',
+			name : 'xl',
 			rowNumber: row,
 			colNumber: col,
 			points: [7,7, len - 7, len -7],
@@ -53,7 +53,7 @@ for (var row = 0; row < dimension; row++) {
 		});
 		var rtlx = new Kinetic.Line({
 			id : "xr" + row + "," + col,
-			name : 'x',
+			name : 'xr',
 			rowNumber: row,
 			colNumber: col,
 			points: [7, len - 7, len - 7, 7],
@@ -368,6 +368,7 @@ function check(square){
 		alert('Player ' + player + ' win');
 	}
 }
+
 shape = squareGroup.get('.square');
 shape.on("mouseenter", function(){
 	if (this.attrs.state === 0){
@@ -384,14 +385,37 @@ shape.on("mouseleave", function(){
 
 shape.on("mouseup", function(){
 	if (this.attrs.selected === true){
-		highlightPlayername(player1Text,player2Text);
 		drawsign(this);		
 		console.log(player);
 		check(this);
 		other();
+		highlightPlayername(player1Text,player2Text);
 		gameLayer.draw();
 
 	}
+});
+
+function reset(){
+	shape.each(function(shape){
+		shape.attrs.state = 0;
+	});
+	xl = xGroup.get('.xl');
+	xr = xGroup.get('.xr');
+	circle = circleGroup.get('.circle');
+	xl.each(function(xl){
+		xl.attrs.visible = false;
+	})
+	xr.each(function(xr){
+		xr.attrs.visible = false;
+	});
+	circle.each(function(circle){
+		circle.attrs.visible = false;
+	})
+}
+
+$('#reset').click(function(){
+	reset();
+	gameLayer.draw();
 });
 
 //end of the program
