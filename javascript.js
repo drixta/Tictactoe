@@ -253,24 +253,22 @@ function checkrow(square){
 	counter = 1;
 	row = square.attrs.rowNumber;
 	col = square.attrs.colNumber;
-	thissquare = square;
-	
+
 	if (col + counter <= dimension){
-		rsquare = squareGroup.get('#'+row+','+(col+counter))[0]
+		var rsquare = squareGroup.get('#'+row+','+(col+counter))[0];
 		while (rsquare && rsquare.attrs.state === player) {   //check right side
 			counter++;
 			total++;
-			rsquare = squareGroup.get('#'+row+','+(col+counter))[0];
-			console.log('Counter' + counter);
+			var rsquare = squareGroup.get('#'+row+','+(col+counter))[0];
 	}
 	}
 	if (col - counter >= 0){
 		counter = 1;
-		lsquare = squareGroup.get('#'+ row + ',' + (col-counter))[0]
+		var lsquare = squareGroup.get('#'+ row + ',' + (col-counter))[0];
 		while (lsquare && lsquare.attrs.state === player) {//check left side
 			counter++;
 			total++;
-			lsquare = squareGroup.get('#'+ row + ',' + (col-counter))[0];
+			var lsquare = squareGroup.get('#'+ row + ',' + (col-counter))[0];
 		}
 	}
 	console.log('Player' + player);
@@ -280,6 +278,32 @@ function checkrow(square){
 }
 
 function checkcol(square){
+	total = 1;
+	counter = 1;
+	row = square.attrs.rowNumber;
+	col = square.attrs.colNumber;
+
+	if (row + counter <= dimension){
+		var rsquare = squareGroup.get('#'+(row+counter)+','+col)[0];
+		while (rsquare && rsquare.attrs.state === player) {   //check right side
+			counter++;
+			total++;
+			var rsquare = squareGroup.get('#'+(row+counter)+','+col)[0];
+	}
+	}
+	if (row - counter >= 0){
+		counter = 1;
+		var lsquare = squareGroup.get('#'+ (row-counter) + ',' + col)[0];
+		while (lsquare && lsquare.attrs.state === player) {//check left side
+			counter++;
+			total++;
+			var lsquare = squareGroup.get('#'+ (row-counter) + ',' + col)[0];
+		}
+	}
+	console.log('Player' + player);
+	if (total === 5) {
+		alert('Player ' + player + ' win');
+	}
 	
 }
 shape = squareGroup.get('.square');
@@ -301,7 +325,7 @@ shape.on("mouseup", function(){
 		highlightPlayername(player1Text,player2Text);
 		drawsign(this);		
 		console.log(player);
-		checkrow(this);
+		checkcol(this);
 		other();
 		gameLayer.draw();
 
