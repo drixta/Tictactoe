@@ -9,19 +9,16 @@ var gameStage = new Kinetic.Stage({
 });
 var stageWidth = gameStage.getWidth();
 
-
-gameLayer = new Kinetic.Layer({
+var gameLayer = new Kinetic.Layer({
 });
 
 var squareGroup = new Kinetic.Group({
-
 });
-var xGroup = new Kinetic.Group({
 
+var xGroup = new Kinetic.Group({
 });
 
 var circleGroup = new Kinetic.Group({
-
 });
 
 var state = 0; //neutral squares
@@ -34,8 +31,8 @@ for (var row = 0; row < dimension; row++) {
 			rowNumber: row,
 			colNumber: col,
 			state : state,
-			x: row*len,
-			y: col*len,
+			x: col*len,
+			y: row*len,
 			width: len,
 			height: len,
 			stroke: 'black',
@@ -43,10 +40,8 @@ for (var row = 0; row < dimension; row++) {
 			fill: 'white',
 			selected: false
 		});
-		squareGroup.add(square);
-		console.log(square.attrs.id);
 		var ltrx = new Kinetic.Line({
-			id : "xl" + col + "," + row,
+			id : "xl" + row + "," + col,
 			name : 'x',
 			rowNumber: row,
 			colNumber: col,
@@ -57,7 +52,7 @@ for (var row = 0; row < dimension; row++) {
 			visible: false
 		});
 		var rtlx = new Kinetic.Line({
-			id : "xr" + col + "," + row,
+			id : "xr" + row + "," + col,
 			name : 'x',
 			rowNumber: row,
 			colNumber: col,
@@ -72,8 +67,8 @@ for (var row = 0; row < dimension; row++) {
 			name: 'circle',
 			rowNumber: row,
 			colNumber: col,
-			x: row*len + len/2,
-			y: col*len + len/2,
+			x: col*len + len/2,
+			y: row*len + len/2,
 			radius: len/2 - 7,
 			stroke: 'black',
 			strokeWidth: 4,
@@ -82,6 +77,7 @@ for (var row = 0; row < dimension; row++) {
 		//using move to change position of Xs
 		ltrx.move(col * len,row * len);
 		rtlx.move(col * len,row * len);
+		squareGroup.add(square);
 		circleGroup.add(circle);
 		xGroup.add(ltrx);
 		xGroup.add(rtlx);
@@ -223,7 +219,7 @@ highlightPlayername(player1Text,player2Text);
 
 //changing players
 function other(){
-	player = (player + 1) % 2;
+	player = Math.abs(player - 3);
 };
 
 function drawx(square){
@@ -232,13 +228,60 @@ function drawx(square){
 	thisxr = xGroup.get('#xr'+ thisid)[0];
 	thisxr.attrs.visible = true;
 	thisxl.attrs.visible = true;
+	square.attrs.state = 1;
 }
 function drawcircle(square){
 	thisid = square.attrs.id;
 	thiscircle = circleGroup.get('#circle' + thisid)[0];
 	thiscircle.attrs.visible = true;
+	square.attrs.state = 2;
 }
 
+function drawsign(square){
+	if (square.attrs.state === 0) {
+		if (player === 1){
+		drawx(square);
+		}
+		else {
+		drawcircle(square);
+		}
+	}
+}
+
+function checkrow(square){
+	total = 1;
+	counter = 1;
+	row = square.attrs.rowNumber;
+	col = square.attrs.colNumber;
+	thissquare = square;
+	
+	if (col + counter <= dimension){
+		rsquare = squareGroup.get('#'+row+','+(col+counter))[0]
+		while (rsquare && rsquare.attrs.state === player) {   //check right side
+			counter++;
+			total++;
+			rsquare = squareGroup.get('#'+row+','+(col+counter))[0];
+			console.log('Counter' + counter);
+	}
+	}
+	if (col - counter >= 0){
+		counter = 1;
+		lsquare = squareGroup.get('#'+ row + ',' + (col-counter))[0]
+		while (lsquare && lsquare.attrs.state === player) {//check left side
+			counter++;
+			total++;
+			lsquare = squareGroup.get('#'+ row + ',' + (col-counter))[0];
+		}
+	}
+	console.log('Player' + player);
+	if (total === 5) {
+		alert('Player ' + player + ' win');
+	}
+}
+
+function checkcol(square){
+	
+}
 shape = squareGroup.get('.square');
 shape.on("mouseenter", function(){
 	if (this.attrs.state === 0){
@@ -255,11 +298,11 @@ shape.on("mouseleave", function(){
 
 shape.on("mouseup", function(){
 	if (this.attrs.selected === true){
-		this.setFill('red');
-		other();
 		highlightPlayername(player1Text,player2Text);
-		drawcircle(this);
+		drawsign(this);		
 		console.log(player);
+		checkrow(this);
+		other();
 		gameLayer.draw();
 
 	}
