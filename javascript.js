@@ -21,6 +21,12 @@ var xGroup = new Kinetic.Group({
 var circleGroup = new Kinetic.Group({
 });
 
+//color
+red = '#e74c3c';
+blue = '#2980b9';
+green = '#27ae60';
+orange = '#e67e22';
+font = 'Arial';
 var state = 0; //neutral squares
 for (var row = 0; row < dimension; row++) {
 	for (var col = 0; col < dimension; col++){
@@ -124,8 +130,8 @@ var player1Box = new Kinetic.Rect({
 	width: sboardWidth,
 	height: sboardHeight/2,
 	stroke: 'black',
-	strokeWidth: 2,
-	fill: 'green'
+	strokeWidth: 1,
+	fill: green
 });
 
 var player1Text = new Kinetic.Text({
@@ -133,20 +139,8 @@ var player1Text = new Kinetic.Text({
 	y: 10,
 	text: ' P1',
 	fontSize: 40,
-	fontFamily: 'Tahoma',
-	fill: 'blue',
-	stroke: 'white',
-	strokeWidth: 1,
-	fontStyle: 'bold'
-});
-
-var player1ScoreText = new Kinetic.Text({
-	x: scoreStage.getWidth()/3,
-	y: scoreStage.getHeight()/3,
-	text: String(player1Score),
-	fontSize: 50,
-	fontFamily: 'Tahoma',
-	fill: 'blue',
+	fontFamily: font,
+	fill: blue,
 	stroke: 'white',
 	strokeWidth: 1,
 	fontStyle: 'bold'
@@ -160,7 +154,7 @@ var player2Box = new Kinetic.Rect({
 	width: sboardWidth,
 	height: sboardHeight/2,
 	stroke: 'black',
-	strokeWidth: 2,
+	strokeWidth: 1,
 	fill: 'brown'
 });
 
@@ -169,31 +163,18 @@ var player2Text = new Kinetic.Text({
 	y: scoreStage.getHeight()/2 + 10,
 	text: ' P2',
 	fontSize: 40,
-	fontFamily: 'Tahoma',
-	fill: 'red',
+	fontFamily: font,
+	fill: red,
 	stroke: 'white',
 	strokeWidth: 1,
 	fontStyle: 'bold'
 });
 
-var player2ScoreText = new Kinetic.Text({
-	x: scoreStage.getWidth()/3,
-	y: scoreStage.getHeight()/2 + scoreStage.getHeight()/3,
-	text: String(player2Score),
-	fontSize: 50,
-	fontFamily: 'Tahoma',
-	fill: 'red',
-	stroke: 'white',
-	strokeWidth: 1,
-	fontStyle: 'bold'
-});
 scoreLayer.add(player1Box);
 scoreLayer.add(player1Text);
-scoreLayer.add(player1ScoreText);
 
 scoreLayer.add(player2Box);
 scoreLayer.add(player2Text);
-scoreLayer.add(player2ScoreText);
 scoreStage.add(scoreLayer);
 //Game logic
 
@@ -201,13 +182,13 @@ var player = 1
 
 function highlightPlayername(player1,player2){
 	if (player === 1){
-		player1.setStrokeWidth(3);
+		player1.setStrokeWidth(2);
 		player1.setText(' P1\nturn');
 		player2.setStrokeWidth(1);
 		player2.setText(' P2');
 	}
 	else {
-		player2.setStrokeWidth(3);
+		player2.setStrokeWidth(2);
 		player2.setText(' P2\nturn');
 		player1.setStrokeWidth(1);
 		player1.setText(' P1');
@@ -365,7 +346,18 @@ function checkLeftDiagonal(square){
 
 function check(square){
 	if (checkrow(square) || checkcol(square) || checkLeftDiagonal(square) || checkRightDiagonal(square)){
-		alert('Player ' + player + ' win');
+		$(function(){
+			$('#modal > p').text(function(){
+				return 'Player ' + player + ' win!';
+			});
+			$("#modal").dialog({
+				height:140,
+				modal:true,
+				beforeClose: function(){
+					reset();
+				}
+			});
+		});
 	}
 }
 
@@ -373,7 +365,7 @@ shape = squareGroup.get('.square');
 shape.on("mouseenter", function(){
 	if (this.attrs.state === 0){
 		this.attrs.selected = true;
-		this.setFill('blue');
+		this.setFill(blue);
 		gameLayer.draw();
 	}
 });
@@ -387,6 +379,7 @@ shape.on("mouseup", function(){
 	if (this.attrs.selected === true){
 		drawsign(this);		
 		console.log(player);
+		gameLayer.draw();
 		check(this);
 		other();
 		highlightPlayername(player1Text,player2Text);
@@ -411,12 +404,11 @@ function reset(){
 	circle.each(function(circle){
 		circle.attrs.visible = false;
 	})
+	gameLayer.draw();
 }
 
 $('#reset').click(function(){
 	reset();
-	gameLayer.draw();
 });
-
 //end of the program
 });
